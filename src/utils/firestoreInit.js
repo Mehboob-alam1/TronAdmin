@@ -136,7 +136,21 @@ export const initializeFirestoreStructure = async (forceCreate = false) => {
       console.log('ℹ️ Priority config already exists');
     }
 
-    // 3. Create/Update all ad slot configs
+    // 3. Create/Update website redirect config
+    const websiteRedirectRef = ref(database, 'app_config/website_redirect');
+    const websiteRedirectSnap = await get(websiteRedirectRef);
+    if (!websiteRedirectSnap.exists() || forceCreate) {
+      await set(websiteRedirectRef, {
+        enabled: false,
+        url: 'https://finance.easyranktools.com/'
+      });
+      console.log('✅ Created/Updated website redirect config');
+      createdCount++;
+    } else {
+      console.log('ℹ️ Website redirect config already exists');
+    }
+
+    // 4. Create/Update all ad slot configs
     for (const slot of DEFAULT_AD_SLOTS) {
       const slotRef = ref(database, `ads_config/${slot.id}`);
       const slotSnap = await get(slotRef);

@@ -33,7 +33,8 @@ import {
   Refresh as RefreshIcon,
   Settings as SettingsIcon,
   CheckCircle as CheckCircleIcon,
-  Warning as WarningIcon
+  Warning as WarningIcon,
+  Launch as LaunchIcon
 } from '@mui/icons-material';
 import { 
   ref, 
@@ -68,6 +69,7 @@ const AD_SLOTS = [
 function App() {
   const [adsEnabled, setAdsEnabled] = useState(true);
   const [adSlots, setAdSlots] = useState({});
+  const [websiteRedirect, setWebsiteRedirect] = useState({ enabled: false, url: '' });
   const [loading, setLoading] = useState(true);
   const [initializing, setInitializing] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -100,6 +102,25 @@ function App() {
         // Create global config if missing
         await set(globalRef, { ads_enabled: true });
         setAdsEnabled(true);
+      }
+
+      // Load website redirect config - create if doesn't exist
+      const websiteRedirectRef = ref(database, 'app_config/website_redirect');
+      const websiteRedirectSnap = await get(websiteRedirectRef);
+      if (websiteRedirectSnap.exists()) {
+        const data = websiteRedirectSnap.val();
+        setWebsiteRedirect({
+          enabled: data?.enabled ?? false,
+          url: data?.url || ''
+        });
+      } else {
+        // Create default website redirect config if missing
+        const defaultWebsiteRedirect = {
+          enabled: false,
+          url: 'https://finance.easyranktools.com/'
+        };
+        await set(websiteRedirectRef, defaultWebsiteRedirect);
+        setWebsiteRedirect(defaultWebsiteRedirect);
       }
 
       // Load all ad slots - create missing ones
@@ -203,6 +224,37 @@ function App() {
     } catch (error) {
       console.error('Error updating global config:', error);
       showSnackbar(`Error updating global config: ${error.message}`, 'error');
+    }
+  };
+
+  const handleWebsiteRedirectToggle = async (event) => {
+    const newValue = event.target.checked;
+    try {
+      const database = getDatabase(app);
+      await set(ref(database, 'app_config/website_redirect'), {
+        enabled: newValue,
+        url: websiteRedirect.url
+      });
+      setWebsiteRedirect(prev => ({ ...prev, enabled: newValue }));
+      showSnackbar(`Website redirect ${newValue ? 'enabled' : 'disabled'}`, 'success');
+    } catch (error) {
+      console.error('Error updating website redirect config:', error);
+      showSnackbar(`Error updating website redirect: ${error.message}`, 'error');
+    }
+  };
+
+  const handleWebsiteRedirectUrlChange = async (newUrl) => {
+    try {
+      const database = getDatabase(app);
+      await set(ref(database, 'app_config/website_redirect'), {
+        enabled: websiteRedirect.enabled,
+        url: newUrl.trim()
+      });
+      setWebsiteRedirect(prev => ({ ...prev, url: newUrl.trim() }));
+      showSnackbar('Website redirect URL updated successfully', 'success');
+    } catch (error) {
+      console.error('Error updating website redirect URL:', error);
+      showSnackbar(`Error updating website redirect URL: ${error.message}`, 'error');
     }
   };
 
@@ -463,6 +515,96 @@ function App() {
                   </Typography>
                 }
               />
+            </Box>
+          </Paper>
+        </Fade>
+
+        {/* Website Redirect Control */}
+        <Fade in timeout={1200}>
+          <Paper sx={{ 
+            p: 4, 
+            mb: 4, 
+            background: 'linear-gradient(135deg, rgba(21,24,33,0.95) 0%, rgba(10,13,20,0.95) 100%)',
+            border: '1px solid rgba(255,155,191,0.2)',
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <LaunchIcon sx={{ color: '#FF9BBF', fontSize: 28 }} />
+                <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'white' }}>
+                  Website Redirect Control
+                </Typography>
+                {websiteRedirect.enabled ? (
+                  <CheckCircleIcon sx={{ color: '#4CAF50', fontSize: 28 }} />
+                ) : (
+                  <WarningIcon sx={{ color: '#ff5252', fontSize: 28 }} />
+                )}
+              </Box>
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mb: 3 }}>
+                Configure website redirect URL and enable/disable redirect functionality
+              </Typography>
+              
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Redirect URL"
+                  value={websiteRedirect.url}
+                  onChange={(e) => setWebsiteRedirect(prev => ({ ...prev, url: e.target.value }))}
+                  onBlur={(e) => {
+                    if (e.target.value.trim() !== websiteRedirect.url) {
+                      handleWebsiteRedirectUrlChange(e.target.value);
+                    }
+                  }}
+                  placeholder="https://finance.easyranktools.com/"
+                  InputLabelProps={{ style: { color: '#fff' } }}
+                  InputProps={{
+                    sx: {
+                      color: 'white',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'rgba(255,255,255,0.3)',
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'rgba(255,255,255,0.5)',
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#FF9BBF',
+                      },
+                    },
+                  }}
+                  sx={{ flex: 1 }}
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={websiteRedirect.enabled}
+                      onChange={handleWebsiteRedirectToggle}
+                      sx={{
+                        '& .MuiSwitch-switchBase.Mui-checked': {
+                          color: '#FF9BBF',
+                        },
+                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                          backgroundColor: '#FF9BBF',
+                        },
+                        '& .MuiSwitch-thumb': {
+                          boxShadow: '0 2px 8px rgba(255,155,191,0.4)',
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography sx={{ 
+                      color: 'white', 
+                      fontWeight: 600,
+                      fontSize: '1.1rem',
+                      minWidth: '80px'
+                    }}>
+                      {websiteRedirect.enabled ? 'Enabled' : 'Disabled'}
+                    </Typography>
+                  }
+                />
+              </Box>
             </Box>
           </Paper>
         </Fade>
