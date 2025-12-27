@@ -3,6 +3,7 @@ import app from '../firebase';
 
 // Default ad slot configurations matching FIRESTORE_AD_SETUP.md
 const DEFAULT_AD_SLOTS = [
+  { id: 'app_open', name: 'App Open Ad', type: 'AppOpen', location: 'App Launch' },
   { id: 'banner_home', name: 'Home Banner', type: 'Banner', location: 'Home Screen' },
   { id: 'banner_wallet', name: 'Wallet Banner', type: 'Banner', location: 'Wallet Screen' },
   { id: 'banner_leaderboard', name: 'Leaderboard Banner', type: 'Banner', location: 'Leaderboard Screen' },
@@ -35,6 +36,7 @@ const FACEBOOK_PLACEHOLDER_IDS = {
   Interstitial: 'VID_HD_16_9_46S_APP_INSTALL#123456789',
   Rewarded: 'VID_HD_16_9_46S_APP_INSTALL#123456789',
   Native: 'IMG_16_9_APP_INSTALL#123456789',
+  AppOpen: '', // Facebook doesn't support App Open ads
 };
 
 /**

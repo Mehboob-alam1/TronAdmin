@@ -47,6 +47,7 @@ import { initializeFirestoreStructure, checkFirestoreStructure } from './utils/f
 import './App.css';
 
 const AD_SLOTS = [
+  { id: 'app_open', name: 'App Open Ad', type: 'AppOpen', location: 'App Launch', icon: '🚀' },
   { id: 'banner_home', name: 'Home Banner', type: 'Banner', location: 'Home Screen', icon: '🏠' },
   { id: 'banner_wallet', name: 'Wallet Banner', type: 'Banner', location: 'Wallet Screen', icon: '💼' },
   { id: 'banner_leaderboard', name: 'Leaderboard Banner', type: 'Banner', location: 'Leaderboard Screen', icon: '🏆' },
@@ -114,6 +115,7 @@ function App() {
           const testAdUnitId = slot.type === 'Banner' ? 'ca-app-pub-3940256099942544/6300978111' :
                               slot.type === 'Interstitial' ? 'ca-app-pub-3940256099942544/1033173712' :
                               slot.type === 'Rewarded' ? 'ca-app-pub-3940256099942544/5224354917' :
+                              slot.type === 'AppOpen' ? 'ca-app-pub-3940256099942544/3419835294' :
                               'ca-app-pub-3940256099942544/2247696110';
           
           const facebookId = slot.type === 'Banner' || slot.type === 'Native' 
@@ -309,6 +311,7 @@ function App() {
       case 'Interstitial': return '#FFC857';
       case 'Rewarded': return '#4CAF50';
       case 'Native': return '#9C27B0';
+      case 'AppOpen': return '#FF5722';
       default: return '#757575';
     }
   };
