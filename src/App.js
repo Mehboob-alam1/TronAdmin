@@ -413,7 +413,7 @@ function App() {
                   WebkitTextFillColor: 'transparent',
                   mb: 1
                 }}>
-                  Ethereum Mining
+                  Tron Mining
                 </Typography>
                 <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 400 }}>
                   Admin Panel - Ad Configuration
