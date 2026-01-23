@@ -1,6 +1,6 @@
-# USDT - Admin Panel
+# ETH Mining - Admin Panel
 
-A simple React admin panel for managing ads configuration in Firebase Realtime Database.
+A simple React admin panel for managing ads configuration for the ETH Mining app in Firebase Realtime Database.
 
 ## Features
 
@@ -11,6 +11,7 @@ A simple React admin panel for managing ads configuration in Firebase Realtime D
 - ✅ Delete ad slots
 - ✅ Real-time updates from Realtime Database
 - ✅ Beautiful UI matching app theme (Blush Pink)
+- ✅ Defaults to Google test ad unit IDs for safe testing
 
 ## Setup Instructions
 
@@ -125,8 +126,8 @@ Each ad slot node contains:
 ```json
 {
   "enabled": true,
-  "admob_id": "ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX",
-  "adx_id": "ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX",
+  "admob_id": "ca-app-pub-3940256099942544/6300978111",
+  "adx_id": "ca-app-pub-3940256099942544/6300978111",
   "facebook_id": "IMG_16_9_APP_INSTALL#XXXXXXXXXX"
 }
 ```
@@ -167,4 +168,3 @@ Each ad slot node contains:
 For issues or questions, check:
 - [Firebase Documentation](https://firebase.google.com/docs)
 - [Material-UI Documentation](https://mui.com/)
-
